@@ -9,7 +9,9 @@ class UsersController < ApplicationController
 
 		@user = User.create(whitelist)
 		if @user.valid?
-			render json: @user
+			#Need to figure out Token
+			token = @user.id
+			render json: {user: @user, token: token}
 		else
 			render json: {errors: @user.errors.full_messages}
 		end
@@ -23,5 +25,28 @@ class UsersController < ApplicationController
 
 	def login
 		puts "Time to do Auth...lol"
+		
+		whitelist = params.permit(:username, :password)
+		@user = User.find_by(username: whitelist[:username])
+
+		if @user && @user.authenticate(whitelist[:password])
+			#Need to figure out Token
+			token = @user.id
+			render json: {user: @user, token:token}
+		else
+			render json: {errors: "Wrong Username or Password"}
+		end
+	end
+
+	def tokenlogin
+		puts "Need to check token in future, for now assume token is ID"
+		whitelist = params.permit(:token)
+		@user = User.find(whitelist[:token])
+
+		if @user
+			render json: {user: @user}
+		else
+			render json: {errors: "Token Invald"}
+		end
 	end
 end
