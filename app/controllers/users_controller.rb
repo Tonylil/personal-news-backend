@@ -5,18 +5,20 @@ class UsersController < ApplicationController
 	end
 
 	def create
-		whitelist = "LOL this is gonna be annoying to do"
+		whitelist = params.permit(:name, :username, :email, :password)
 
-		@User = User.create(whitelist)
-		if @User.valid?
-			render json: @User
+		@user = User.create(whitelist)
+		if @user.valid?
+			render json: @user
 		else
-			render json: {errors: @User.errors.full_messages}
+			render json: {errors: @user.errors.full_messages}
 		end
 	end
 
 	def show
 		puts "Need to check token somehow, auth stuff"
+		@user = User.find(params[:id])
+		render json: @user
 	end
 
 	def login
