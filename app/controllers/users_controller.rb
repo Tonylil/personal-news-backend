@@ -32,7 +32,8 @@ class UsersController < ApplicationController
 		if @user && @user.authenticate(whitelist[:password])
 			#Need to figure out Token
 			token = @user.id
-			render json: {user: @user, token:token}
+			@interests = @user.interests
+			render json: {user: @user, token:token, interest: @interests}
 		else
 			render json: {errors: "Wrong Username or Password"}
 		end
@@ -44,7 +45,8 @@ class UsersController < ApplicationController
 		@user = User.find(whitelist[:token])
 
 		if @user
-			render json: {user: @user}
+			@interests = @user.interests
+			render json: {user: @user, interest: @interests}
 		else
 			render json: {errors: "Token Invald"}
 		end
